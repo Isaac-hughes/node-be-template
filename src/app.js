@@ -6,6 +6,10 @@ const { errorHandler } = require('./middleware/errorHandler');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 
+// Routes
+const userRoutes = require('./routes/user.routes');
+const authRoutes = require('./routes/auth.routes');
+
 const app = express();
 
 // Security middleware
@@ -28,6 +32,9 @@ app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/api/v1/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
+
+app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
 
 // Error handling
 app.use(errorHandler);

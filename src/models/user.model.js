@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema(
   {
@@ -65,6 +66,20 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 userSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
+
+// Add these methods after the existing methods but before the OpenAPI documentation
+userSchema.methods.generateAuthToken = function () {
+  return jwt.sign({ id: this._id, role: this.role }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
+
+// Method to get public profile
+userSchema.methods.toPublicJSON = function () {
+  const user = this.toObject();
+  delete user.password;
+  return user;
+};
 
 /**
  * @openapi
