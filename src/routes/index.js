@@ -1,4 +1,6 @@
 const express = require('express');
+const userRoutes = require('./user.routes');
+
 const router = express.Router();
 
 // Health check route
@@ -8,6 +10,9 @@ router.get('/health', (req, res) => {
     message: 'Server is healthy',
   });
 });
+
+// Mount routes
+router.use('/users', userRoutes);
 
 // Mount other route modules here
 // router.use('/auth', authRoutes);

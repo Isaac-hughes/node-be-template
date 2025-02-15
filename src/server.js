@@ -11,9 +11,22 @@ mongoose
   .connect(MONGODB_URI)
   .then(() => {
     logger.info('Connected to MongoDB');
-    app.listen(PORT, () => {
-      logger.info(`Server is running on port ${PORT}`);
-    });
+
+    // Try to find an available port
+    const server = app
+      .listen(PORT)
+      .on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+          logger.warn(`Port ${PORT} is busy, trying ${PORT + 1}`);
+          server.listen(PORT + 1);
+        } else {
+          logger.error('Server error:', err);
+        }
+      })
+      .on('listening', () => {
+        const address = server.address();
+        logger.info(`Server is running on port ${address.port}`);
+      });
   })
   .catch((error) => {
     logger.error('MongoDB connection error:', error);
