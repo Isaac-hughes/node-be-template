@@ -12,6 +12,10 @@ A production-ready Node.js backend boilerplate for quick MVP development. This t
 │ ├── routes/ # API routes
 │ ├── services/ # Business logic and external service integrations
 │ ├── utils/ # Utility functions and helpers
+│ ├── validations/ # Input validation and sanitization
+│ │ ├── rules/ # Validation rules for different entities
+│ │ ├── patterns.js # Common validation patterns
+│ │ └── index.js # Validation middleware exports
 │ ├── app.js # Express app setup
 │ └── server.js # Server entry point
 
@@ -45,6 +49,62 @@ A production-ready Node.js backend boilerplate for quick MVP development. This t
 - **prettier**: Code formatting
 - **jest**: Testing framework
 - **supertest**: HTTP testing library
+
+## 🔒 Validation System
+
+### Overview
+
+The validation system is designed to be modular and scalable, providing both validation and sanitization of input data.
+
+### Structure
+
+```
+src/validations/
+├── rules/              # Validation rules for different entities
+│   └── user.rules.js   # User-specific validation rules
+├── patterns.js         # Common validation patterns (regex)
+├── sanitizers.js       # Input sanitization utilities
+├── validator.js        # Core validation logic
+└── index.js           # Exports validation middlewares
+```
+
+### Key Features
+
+#### 1. Validation Patterns
+
+Common validation patterns are centralized in `patterns.js`:
+
+```javascript
+exports.PATTERNS = {
+  NAME: /^[a-zA-Z\s-']+$/,
+  PASSWORD: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])/,
+  // Add more patterns as needed
+};
+```
+
+#### 2. Input Sanitization
+
+- Strips unexpected fields
+- Normalizes email addresses
+- Escapes HTML characters
+- Trims whitespace
+
+#### 3. Validation Chains
+
+Combines multiple validation steps:
+
+```javascript
+exports.validateUser = [sanitizeBody(allowedFields), ...validationRules, validate];
+```
+
+### Usage Example
+
+```javascript
+// In your routes file
+const { validateUser } = require('../validations');
+
+router.post('/users', validateUser, userController.createUser);
+```
 
 ## 🚀 Getting Started
 
