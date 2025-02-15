@@ -169,13 +169,134 @@ More endpoints will be documented as they are implemented.
 
 ## 🧪 Testing
 
+The project uses Jest as the testing framework along with several key testing utilities to ensure code quality and reliability.
+
+### Test Structure
+
+```
+├── tests/
+│   ├── unit/
+│   │   ├── models/          # Database model tests
+│   │   │   └── user.test.js # User model CRUD tests
+│   │   ├── services/        # Business logic tests
+│   │   └── utils/          # Utility function tests
+│   ├── integration/
+│   │   └── api/            # API endpoint tests
+│   │       └── health.test.js
+│   └── setup.js            # Global test configuration
+```
+
+### Testing Tools
+
+- **Jest**: Main testing framework
+- **Supertest**: HTTP assertions for API testing
+- **MongoDB Memory Server**: In-memory MongoDB for testing
+- **Mongoose**: MongoDB object modeling for Node.js
+
+### Test Setup
+
+The testing environment is configured to:
+
+1. Use an in-memory MongoDB database for tests
+2. Automatically clean up test data between runs
+3. Provide isolated test environments for each test suite
+
+```javascript
+// tests/setup.js
+beforeAll(async () => {
+  // Connect to in-memory database before tests
+});
+
+afterAll(async () => {
+  // Cleanup database connection after tests
+});
+```
+
+### Running Tests
+
 ```bash
-# Run tests
+# Run all tests
 npm test
+
+# Run tests in watch mode
+npm run test:watch
 
 # Run tests with coverage
 npm run test:coverage
+
+# Run specific test file
+npm test -- tests/unit/models/user.test.js
 ```
+
+### Test Categories
+
+#### Unit Tests
+
+- **Model Tests**: CRUD operations and validations
+  - Create operations (with validation)
+  - Read operations
+  - Update operations
+  - Delete operations
+- **Service Tests**: Business logic (planned)
+- **Utility Tests**: Helper functions (planned)
+
+#### Integration Tests
+
+- **API Tests**: HTTP endpoint testing
+  - Health check endpoint
+  - User endpoints (planned)
+  - Authentication endpoints (planned)
+
+### Test Examples
+
+```javascript
+// Model test example
+describe('Create Operations', () => {
+  it('should successfully create a user with valid data', async () => {
+    const validUser = new User({
+      email: 'test@example.com',
+      password: 'Password123!',
+      firstName: 'John',
+      lastName: 'Doe',
+    });
+    const savedUser = await validUser.save();
+    expect(savedUser._id).toBeDefined();
+  });
+});
+
+// API test example
+describe('Health Check API', () => {
+  it('should return 200 for health check endpoint', async () => {
+    const res = await request(app).get('/api/v1/health').send();
+    expect(res.statusCode).toBe(200);
+  });
+});
+```
+
+### Best Practices
+
+1. **Test Organization**
+
+   - Tests are grouped by functionality
+   - Each test file focuses on a specific component
+   - Clear test descriptions using describe/it blocks
+
+2. **Test Data**
+
+   - Helper functions for creating test data
+   - Cleanup between tests
+   - Isolated test environments
+
+3. **Assertions**
+
+   - Clear, specific assertions
+   - Testing both positive and negative cases
+   - Proper error handling verification
+
+4. **Database Handling**
+   - In-memory database for speed
+   - Clean state between tests
+   - Proper connection management
 
 ## 🔒 Security Features
 
