@@ -66,6 +66,47 @@ userSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *         - firstName
+ *         - lastName
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: User's email address
+ *         password:
+ *           type: string
+ *           format: password
+ *           minLength: 8
+ *           description: User's password
+ *         firstName:
+ *           type: string
+ *           description: User's first name
+ *         lastName:
+ *           type: string
+ *           description: User's last name
+ *         role:
+ *           type: string
+ *           enum: [user, admin]
+ *           default: user
+ *           description: User's role
+ *         isActive:
+ *           type: boolean
+ *           default: true
+ *           description: Whether the user account is active
+ *         fullName:
+ *           type: string
+ *           description: User's full name (virtual field)
+ */
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

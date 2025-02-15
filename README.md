@@ -145,6 +145,37 @@ STRIPE_WEBHOOK_SECRET=your-webhook-secret
 
 More endpoints will be documented as they are implemented.
 
+### Swagger UI
+
+This project includes Swagger UI for API documentation and testing. After starting the server, you can access the interactive API documentation at:
+
+```
+http://localhost:3000/swagger
+```
+
+The Swagger UI provides:
+
+- Detailed documentation for all API endpoints
+- Request/response schemas
+- Interactive API testing interface
+- Model documentation
+
+### Documentation Structure
+
+The API documentation is generated from:
+
+- OpenAPI/Swagger comments in route files (`src/routes/*.js`)
+- Model schemas documentation (`src/models/*.js`)
+- Swagger configuration (`src/config/swagger.js`)
+
+### Using Swagger UI
+
+1. Start the development server
+2. Navigate to `http://localhost:5001/swagger` in your browser
+3. Explore the available endpoints
+4. Test API endpoints directly from the UI
+5. View request/response schemas and examples
+
 ## 🔍 Code Quality & Standards
 
 ### Linting & Formatting
