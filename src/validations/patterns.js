@@ -8,8 +8,6 @@ exports.PATTERNS = {
 
   // Password requires uppercase, lowercase, number, and special character
   PASSWORD: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])/,
-
-  // Add more patterns as needed
 };
 
 // Add pattern descriptions for documentation

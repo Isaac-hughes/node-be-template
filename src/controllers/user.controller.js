@@ -3,6 +3,10 @@ const User = require('../models/user.model');
 const catchAsync = require('../utils/catchAsync');
 const { v4: uuidv4 } = require('uuid');
 const S3Service = require('../services/aws/s3/s3');
+const { sendEmail } = require('../services/sendgrid/sendgrid');
+const {
+  generateWelcomeEmailContent,
+} = require('../services/sendgrid/templates/welcomeEmailTemplate');
 
 /**
  * User Controller
@@ -74,30 +78,37 @@ exports.getUser = async (req, res) => {
  * @param   {Object} req.body - User data (validated by middleware)
  * @returns {Object} 201 - Created user object with auth token
  */
-exports.createUser = async (req, res) => {
+exports.createUser = catchAsync(async (req, res) => {
+  const user = await User.create(req.body);
+
+  // Generate token
+  const token = user.generateAuthToken();
+
+  // Send welcome email
   try {
-    const user = await User.create(req.body);
-
-    // Generate token
-    const token = user.generateAuthToken();
-
-    // Remove password from output
-    user.password = undefined;
-
-    res.status(201).json({
-      status: 'success',
-      token,
-      data: {
-        user: user.toPublicJSON(),
-      },
+    await sendEmail({
+      to: user.email,
+      from: process.env.SENDGRID_FROM_EMAIL,
+      subject: 'Welcome to Our Platform!',
+      text: `Hi ${user.firstName}, welcome to our platform!`,
+      html: generateWelcomeEmailContent(user.firstName),
     });
   } catch (error) {
-    res.status(400).json({
-      status: 'error',
-      message: error.message,
-    });
+    // Log the error but don't fail the user creation
+    console.error('Error sending welcome email:', error);
   }
-};
+
+  // Remove password from output
+  user.password = undefined;
+
+  res.status(201).json({
+    status: 'success',
+    token,
+    data: {
+      user: user.toPublicJSON(),
+    },
+  });
+});
 
 /**
  * Update an existing user
