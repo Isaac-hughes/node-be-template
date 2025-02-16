@@ -1,0 +1,37 @@
+/api/v1/health:
+  get:
+    tags: [Health]
+    summary: Check API health status
+    description: Returns the health status of the API. Used for monitoring and health checks.
+    responses:
+      200:
+        description: API is healthy
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: ok
+                uptime:
+                  type: number
+                  description: Server uptime in seconds
+                  example: 3600
+                timestamp:
+                  type: string
+                  format: date-time
+                  example: '2024-03-21T10:00:00.000Z'
+      500:
+        description: API is unhealthy
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: error
+                message:
+                  type: string
+                  example: Service unavailable

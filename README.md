@@ -80,6 +80,51 @@ Add JWT token to Authorization header:
 Authorization: Bearer <your-jwt-token>
 ```
 
+## 🛡️ Security Features
+
+### Request Protection
+
+- **Rate Limiting**: Configurable request limits per IP
+
+  - Default: 100 requests per 15 minutes
+  - Configurable via `RATE_LIMIT_WINDOW` and `RATE_LIMIT_MAX`
+
+- **Payload Limits**:
+  - JSON payloads: 10KB limit
+  - URL-encoded payloads: 10KB limit
+  - File uploads: 5MB limit (configurable)
+
+### Security Headers (Helmet)
+
+- **Content Security Policy (CSP)**:
+
+  - Strict resource loading controls
+  - XSS protection
+  - Inline script/style protection
+
+- **Cross-Origin Policies**:
+
+  - Embedder Policy
+  - Opener Policy
+  - Resource Policy
+  - Configurable CORS settings
+
+- **HTTP Security Headers**:
+  - HSTS enabled
+  - X-Frame-Options
+  - X-Content-Type-Options
+  - Referrer-Policy
+  - XSS Protection
+
+### Environment Variables for Security
+
+```env
+# Security
+ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com
+RATE_LIMIT_WINDOW=900000  # 15 minutes in milliseconds
+RATE_LIMIT_MAX=100        # Maximum requests per window
+```
+
 ## 🔒 Validation System
 
 The validation system provides modular input validation and sanitization.
@@ -135,32 +180,7 @@ npm run test:coverage # Coverage report
 
 ## 🔐 Environment Variables
 
-```env
-# Server
-PORT=5001
-NODE_ENV=development
-
-# Database
-MONGODB_URI=mongodb://localhost:27017/your-database
-
-# Authentication
-JWT_SECRET=your-super-secure-secret-key
-JWT_EXPIRES_IN=24h
-
-# AWS
-AWS_ACCESS_KEY_ID=your-access-key
-AWS_SECRET_ACCESS_KEY=your-secret-key
-AWS_REGION=your-region
-AWS_BUCKET_NAME=your-bucket-name
-
-# SendGrid
-SENDGRID_API_KEY=your-sendgrid-key
-SENDGRID_FROM_EMAIL=your-sender-email
-
-# Stripe
-STRIPE_SECRET_KEY=your-stripe-secret-key
-STRIPE_WEBHOOK_SECRET=your-webhook-secret
-```
+See [.env.example](.env.example) for required environment variables.
 
 ## 📦 Available Scripts
 

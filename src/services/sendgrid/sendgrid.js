@@ -1,4 +1,5 @@
 const sgMail = require('@sendgrid/mail');
+const logger = require('../../utils/logger');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -22,11 +23,20 @@ const sendEmail = async ({ to, from, subject, text, html }) => {
 
   try {
     await sgMail.send(msg);
+    logger.info('Email sent successfully', {
+      to,
+      from,
+      subject,
+      messageId: msg.messageId,
+    });
   } catch (error) {
-    console.error('Error sending email:', error);
-    if (error.response) {
-      console.error('Error details:', error.response.body);
-    }
+    logger.error('Error sending email:', {
+      error: error.message,
+      details: error.response?.body,
+      to,
+      from,
+      subject,
+    });
     throw new Error('Failed to send email');
   }
 };
