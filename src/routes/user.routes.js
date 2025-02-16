@@ -22,7 +22,6 @@ router.patch('/update-profile', userController.updateProfile);
 router.post('/profile-picture', validateProfilePicture, userController.uploadProfilePicture);
 router.get('/all', restrictTo('admin'), userController.getAllUsers);
 
-// ID routes should come last
 router
   .route('/:id')
   .get(userController.getUser)
