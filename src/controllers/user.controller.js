@@ -1,6 +1,8 @@
 const { AppError } = require('../middleware/errorHandler');
 const User = require('../models/user.model');
 const catchAsync = require('../utils/catchAsync');
+const { v4: uuidv4 } = require('uuid');
+const S3Service = require('../services/aws/s3/s3');
 
 /**
  * User Controller
@@ -213,3 +215,38 @@ exports.getAllUsers = async (req, res) => {
     });
   }
 };
+
+exports.uploadProfilePicture = catchAsync(async (req, res) => {
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+
+  const { imageBase64, mimeType } = req.body;
+  const fileName = `profile-${uuidv4()}.${mimeType.split('/')[1]}`;
+  const s3Service = new S3Service();
+
+  // Delete existing profile picture if it exists
+  if (user.profilePicture) {
+    const existingFileName = user.profilePicture.split('/').pop();
+    await s3Service.deleteProfilePicture(existingFileName);
+  }
+
+  // Upload new profile picture
+  const uploadResult = await s3Service.uploadProfilePicture(imageBase64, mimeType, fileName);
+
+  const bucketName = process.env.AWS_BUCKET_NAME;
+  const region = process.env.AWS_REGION;
+  const profilePictureUrl = `https://${bucketName}.s3.${region}.amazonaws.com/profile-pictures/${fileName}`;
+
+  user.profilePicture = profilePictureUrl;
+  await user.save();
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      profilePictureUrl,
+      metadata: uploadResult.$metadata,
+    },
+  });
+});

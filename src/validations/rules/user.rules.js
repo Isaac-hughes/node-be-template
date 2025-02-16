@@ -57,3 +57,19 @@ exports.userUpdateValidationRules = [
 // Define allowed fields
 exports.createUserFields = ['email', 'password', 'firstName', 'lastName', 'role', 'isActive'];
 exports.updateUserFields = ['email', 'password', 'firstName', 'lastName'];
+
+// Profile picture validation rules
+exports.profilePictureValidationRules = [
+  body('imageBase64')
+    .notEmpty()
+    .withMessage('Image data is required')
+    .isString()
+    .withMessage('Image data must be a base64 string'),
+  body('mimeType')
+    .notEmpty()
+    .withMessage('MIME type is required')
+    .isString()
+    .withMessage('MIME type must be a string')
+    .matches(/^image\/(jpeg|png|gif)$/)
+    .withMessage('Invalid image type. Only JPEG, PNG and GIF are allowed'),
+];

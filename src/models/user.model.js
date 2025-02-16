@@ -2,6 +2,14 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     User:
+ *       $ref: './docs/user.model.yaml#/components/schemas/User'
+ */
+
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -32,6 +40,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Last name is required'],
       trim: true,
+    },
+    profilePicture: {
+      type: String,
+      default: null,
     },
     role: {
       type: String,
@@ -80,47 +92,6 @@ userSchema.methods.toPublicJSON = function () {
   delete user.password;
   return user;
 };
-
-/**
- * @openapi
- * components:
- *   schemas:
- *     User:
- *       type: object
- *       required:
- *         - email
- *         - password
- *         - firstName
- *         - lastName
- *       properties:
- *         email:
- *           type: string
- *           format: email
- *           description: User's email address
- *         password:
- *           type: string
- *           format: password
- *           minLength: 8
- *           description: User's password
- *         firstName:
- *           type: string
- *           description: User's first name
- *         lastName:
- *           type: string
- *           description: User's last name
- *         role:
- *           type: string
- *           enum: [user, admin]
- *           default: user
- *           description: User's role
- *         isActive:
- *           type: boolean
- *           default: true
- *           description: Whether the user account is active
- *         fullName:
- *           type: string
- *           description: User's full name (virtual field)
- */
 
 const User = mongoose.model('User', userSchema);
 
