@@ -1,6 +1,7 @@
 const express = require('express');
 const authController = require('../controllers/auth.controller');
 const { protect } = require('../middleware/auth.middleware');
+const { validateLogin } = require('../validations');
 
 /**
  * @openapi
@@ -10,7 +11,7 @@ const { protect } = require('../middleware/auth.middleware');
 
 const router = express.Router();
 
-router.post('/login', authController.login);
+router.post('/login', validateLogin, authController.login);
 router.post('/logout', protect, authController.logout);
 
 module.exports = router;

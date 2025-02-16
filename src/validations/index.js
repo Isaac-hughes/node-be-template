@@ -6,6 +6,7 @@ const {
   updateUserFields,
   profilePictureValidationRules,
 } = require('./rules/user.rules');
+const { loginValidationRules, loginFields } = require('./rules/auth.rules');
 
 /**
  * User Validation Chains
@@ -13,3 +14,8 @@ const {
 exports.validateUser = createValidationChain(userValidationRules, createUserFields);
 exports.validateUserUpdate = createValidationChain(userUpdateValidationRules, updateUserFields);
 exports.validateProfilePicture = createValidationChain(profilePictureValidationRules);
+
+/**
+ * Auth Validation Chains
+ */
+exports.validateLogin = createValidationChain(loginValidationRules, loginFields);
